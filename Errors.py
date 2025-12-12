@@ -67,11 +67,12 @@ class MagicNumberError(SteganographyError):
         else:
             message = f"Invalid magic number: found 0x{found:08X}, expected 0x{expected:08X}"
         super().__init__(message)
+        
 class InvalidMessageError(SteganographyError):
     """ Raised when the hidden message is invalid or malformed """
     pass
 
-class MEssageTooLargeError(SteganographyError):
+class MessageTooLargeError(SteganographyError):
     """ Raised when the hidden message is too large for the image """
     def __init__(self, message_size, max_size):
         self.message_size = message_size
