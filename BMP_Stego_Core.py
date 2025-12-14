@@ -58,9 +58,9 @@ class BMPparser:
         self.channels = 3 if self.bit_depth == 24 else 4
         
         # Calculate row padding BMP rows must be multiples of 4 bytes
-        self._calculate_row_padding()
+        self.calculate_row_padding()
 
-    def calaculate_row_padding(self):
+    def calculate_row_padding(self):
         # calclate padding bytes that are added to rows as bmp needs each row to be 4 bytes 
         bytes_per_pixel = self.channels # 3 for rgb and 4 for rgba
         row_size= self.width * bytes_per_pixel # data per row
