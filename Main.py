@@ -15,25 +15,25 @@ def encode_message(input_bmp, message, output_bmp):
     use_alpha = parser.has_alpha() # detect if rgb or rgba
 
     if use_alpha:
-        print("Detected: {parser.bit_depth}-bit RGBA image")
+        print(f"Detected: {parser.bit_depth}-bit RGBA image")
         print(" Using alpha channel for encoding")
     else:
-        print("Detected: {parser.bit_depth}-bit RGB image")
+        print(f"Detected: {parser.bit_depth}-bit RGB image")
         print("Using RGB channels for encoding")
-    print ("Image size: {parser.width}x{parser.height}")
+    print (f"Image size: {parser.width}x{parser.height}")
     capacity_bits=parser.get_capacity_bits(use_alpha)
     capacity_bytes=capacity_bits // 8
-    print(" Capacity: {capacity_bytes:,} bytes")
+    print(f" Capacity: {capacity_bytes:,} bytes")
     binary_message= prepare_message_for_encoding(message)
     message_bits = len(binary_message)
     message_bytes = message_bits // 8
-    print ("Message length: {len(message)} characters")
+    print (f"Message length: {len(message)} characters")
     
     if message_bits > capacity_bits:
         raise InsufficientCapacityError(required=message_bytes, available=capacity_bytes)
     usage_precent = (message_bits / capacity_bits) * 100
     print("Capacity check passed")
-    print("Using {usage_precent:.1f} % of available capacity")
+    print(f"Using {usage_precent:.1f} % of available capacity")
     print("Encoding message into pixels")
     pixel_data =parser.get_pixel_data()
     encoded_pixels=encode_binary_in_pixels(pixel_data, binary_message, use_alpha=use_alpha)
@@ -42,14 +42,14 @@ def encode_message(input_bmp, message, output_bmp):
     new_bmp_data=parser.reconstruct_bmp(encoded_pixels)
     write_file_bytes(output_bmp, new_bmp_data)
     output_size = len(new_bmp_data)
-    print("Saved to: {output_bmp}")
-    print("File size: {output_size:,} bytes")
+    print(f"Saved to: {output_bmp}")
+    print(f"File size: {output_size:,} bytes")
 
     return{'success': True, 'output_file': output_bmp, "message_length": len(message), 'capacity_precent': usage_precent, 'format': 'RGBA' if use_alpha else 'RGB'}
 
 def encode_from_file(input_bmp, message_file, output_bmp):
     # encode message from text file
-    print("Reading message from: {message_file}")
+    print(f"Reading message from: {message_file}")
     message= None
     try:
         with open(message_file, 'r', encoding='utf-8') as f:
@@ -60,7 +60,7 @@ def encode_from_file(input_bmp, message_file, output_bmp):
         raise FileReadError(message_file, str(e))
     if not message:
         raise InvalidMessageError("Message file is empty")
-    print("Read {len(message)} characters from file \n")
+    print(f"Read {len(message)} characters from file \n")
     return encode_message(input_bmp, message, output_bmp)
 
 ### Decoding ###
@@ -73,9 +73,9 @@ def decode_message(input_bmp):
     parser=BMPparser(bmp_data)
     use_alpha=parser.has_alpha()
     if use_alpha:
-        print("Detected: {parser.bit_depth}-bit RGBA image")
+        print(f"Detected: {parser.bit_depth}-bit RGBA image")
     else:
-        print("Detected: {parser.bit_depth}-bit RGB image")
+        print(f"Detected: {parser.bit_depth}-bit RGB image")
     pixel_data=parser.get_pixel_data()
     binary_data=decode_binary_from_pixels(pixel_data, use_alpha=use_alpha)
     try:
@@ -108,7 +108,7 @@ def decode_message(input_bmp):
 def decode_to_file(input_bmp_path, output_file_path):
     #decode message and asave it to text file
     message_text, metadata = decode_message(input_bmp_path)
-    print("\n Saving to: {output_file_path}")
+    print(f"\n Saving to: {output_file_path}")
     try:
         with open (output_file_path, 'w', encoding='utf-8') as f:
             f.write(message_text)
@@ -213,7 +213,7 @@ def handle_encode_text():
         print()
         result = encode_message(input_bmp_file, user_message, output_bmp_file)
         print("\n" + "=" * 60)
-        print("✅ ENCODING SUCCESSFUL")
+        print("ENCODING SUCCESSFUL")
         print("=" * 60)
         print(f"Output: {result['output_file']}")
         print(f"Message: {result['message_length']} characters")

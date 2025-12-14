@@ -39,13 +39,13 @@ class BMPparser:
         # read color planes muse be 1 for bmp format
         planes = bytes_to_int(self.file_bytes, 26, 2, 'little')
         if planes != 1:
-            raise ImageCorruptedError("Invalid BMP: color planes = {planes} (must be 1)")
+            raise ImageCorruptedError(f"Invalid BMP: color planes = {planes} (must be 1)")
         # read bits per pixel or channels either 24:rgb or 32:rgba
         self.bit_depth = bytes_to_int(self.file_bytes, 28, 2, 'little')
         
         # Check if it's a supported bit depth
         if self.bit_depth not in Supported_Bit_Depths:
-            raise ImageFormatError("{self.bit_depth}-bit", "Only 24-bit and 32-bit BMPs supported")
+            raise ImageFormatError(f"{self.bit_depth}-bit", "Only 24-bit and 32-bit BMPs supported")
         
         # Read compression type must be 0 for uncompressed
         compression = bytes_to_int(self.file_bytes, 30, 4, 'little')
@@ -208,7 +208,7 @@ def parse_encoded_message(binary_data):
     # Check if we have enough data for the full message
     total_bits_needed = Header_size_bits + message_length
     if len(binary_data) < total_bits_needed:
-        raise ValueError("Incomplete message: need {total_bits_needed} bits")
+        raise ValueError(f"Incomplete message: need {total_bits_needed} bits")
     
     # Extract message binary start after header
     message_binary = binary_data[Header_size_bits:Header_size_bits + message_length]
@@ -217,7 +217,7 @@ def parse_encoded_message(binary_data):
     try:
         message_text = binary_to_string(message_binary)
     except Exception as e:
-        raise DecodingError("Failed to convert binary to text: {str(e)}")
+        raise DecodingError(f"Failed to convert binary to text: {str(e)}")
     
     # Verify checksum
     calculated_checksum = calculate_checksum(message_text)
