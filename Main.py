@@ -53,7 +53,7 @@ def encode_from_file(input_bmp, message_file, output_bmp):
     message= None
     try:
         with open(message_file, 'r', encoding='utf-8') as f:
-            message- f.read()
+            message=f.read()
     except FileNotFoundError:
         raise FileReadError(message_file, "Message file not found")
     except Exception as e:
